@@ -41,6 +41,14 @@ module.exports = (sequelize, DataTypes) => {
           len: [60, 60],
     },
   },
+  firstName: {
+    type: Sequelize.String,
+    allowNull: false
+  },
+  lastName: {
+    type: Sequelize.String,
+    allowNull: false
+  },
 }, 
   {
     sequelize,
