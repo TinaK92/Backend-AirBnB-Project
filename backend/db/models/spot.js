@@ -14,18 +14,18 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE',
       });
       // Spot has many Reviews
-      Spot.hasMany(models.Reviews, {
+      Spot.hasMany(models.Review, {
         foreignKey: 'spotId', 
         onDelete: 'CASCADE',
       });
       // Spot has many Spot Images
-      Spot.hasMany(models.SpotImages, {
+      Spot.hasMany(models.SpotImage, {
         foreignKey: 'spotId',
         onDelete: 'CASCADE',
       });
       // Spot belongs to User by id
       Spot.belongsTo(models.User, {
-        foreignKey: 'id', 
+        foreignKey: 'ownerId', 
         onDelete: 'CASCADE',
       })
     }
