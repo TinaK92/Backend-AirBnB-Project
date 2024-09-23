@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model, Validator } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Booking extends Model {
     /**
@@ -10,14 +8,50 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Bookings belong to User by id
+      Booking.belongsTo(models.Users, {
+        foreignKey: 'id',
+        onDelete: 'CASCADE',
+      });
+      Booking.belongsTo(models.Spots, {
+        foreignKey: 'id', 
+        onDelete: 'CASCADE',
+      })
     }
   }
   Booking.init({
-    spotId: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER,
-    startDate: DataTypes.DATE,
-    endDate: DataTypes.DATE
+    spotId: {
+      type: DataTypes.INTEGER, 
+      allowNull: false
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    startDate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        isDate: true,
+        isFuture(value) {
+          if (new Date(value) <= new Date()) {
+            throw new Error('Start date must be in the future.');
+          }
+        }
+      }
+    },
+    endDate: {
+      type: DataTypes.DATE,
+      allowNull: true, 
+      validate: {
+        isDate: true,
+        isAfterStartDate(value) {
+          if (new Date(value) <= new Date(this.startDate)) {
+            throw new Error('End date must be after start date.');
+          }
+        }
+      }
+    },
   }, {
     sequelize,
     modelName: 'Booking',

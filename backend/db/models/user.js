@@ -8,8 +8,23 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // has many Spots
+      User.hasMany(models.Spot, {
+        foreignKey: 'ownderId',
+        as: 'OwnedSpots',
+        onDelete: 'CASCADE',
+      });
+      //has many Bookings
+      User.hasMany(models.Booking, {
+        foreignKey: 'userId',
+        onDelete: 'CASCADE',
+      });
+      User.hasMany(models.Review, {
+        foreignKey: 'userId',
+        onDelete: 'CASCADE', 
+      })
     }
+
   }
   User.init({
     username: {
