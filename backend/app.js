@@ -6,6 +6,7 @@ const cors = require('cors');
 const csurf = require('csurf');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
+const sessionRouter = require('../backend/routes/api/session.js')
 
 // Create a variable called isProduction that will be true if 
 // the environment is in production or not by checking the 
@@ -15,6 +16,8 @@ const isProduction = environment === 'production';
 
 // Initialize the Express application:
 const app = express();
+
+
 
 // Connect the morgan middleware for logging information about 
 // requests and responses:
@@ -72,6 +75,7 @@ const routes = require('./routes');
 
 
 app.use(routes); // Connect all the routes
+app.use('/session', sessionRouter);
 
 // backend/app.js
 // Catch unhandled requests and forward to error handler.

@@ -2,6 +2,8 @@
 const router = require('express').Router();
 const sessionRouter = require('./session.js');
 const usersRouter = require('./users.js');
+const bookingRouter = require('./bookings.js');
+const spotRouter = require('./spot.js');
 
 // backend/routes/api/index.js
 router.post('/test', function(req, res) {
@@ -61,5 +63,7 @@ router.post('/test', (req, res) => {
     
   res.json({ requestBody: req.body });
 });
+
+router.use('/spots', spotRouter);
 
 module.exports = router;
