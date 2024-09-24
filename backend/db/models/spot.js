@@ -11,67 +11,99 @@ module.exports = (sequelize, DataTypes) => {
       // Spot has many Bookings
       Spot.hasMany(models.Booking, {
         foreignKey: 'spotId',
-        onDelete: 'CASCADE',
       });
       // Spot has many Reviews
       Spot.hasMany(models.Review, {
         foreignKey: 'spotId', 
-        onDelete: 'CASCADE',
       });
       // Spot has many Spot Images
       Spot.hasMany(models.SpotImage, {
         foreignKey: 'spotId',
-        onDelete: 'CASCADE',
       });
       // Spot belongs to User by id
       Spot.belongsTo(models.User, {
-        foreignKey: 'ownerId', 
-        onDelete: 'CASCADE',
+        foreignKey: 'ownerId',
+        as: 'Owner'
       })
     }
   }
   Spot.init({
     ownerId: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: 'User',
+        key: 'id',
+      },
+      onDelete: 'CASCADE',
     },
     address: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      }
     },
     city: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      }
     },
     state: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      }
     },
     country: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false, 
+      validate: {
+        notEmpty: true,
+      }
     },
     lat: {
       type: DataTypes.DECIMAL,
-      allowNull: false
+      allowNull: false, 
+      validate: {
+        min: -80,
+        max: 80
+      }
     },
     lng: {
       type: DataTypes.DECIMAL,
-      allowNull: false
-    },
+      allowNull: false,
+      validate: {
+        min: -180,
+        max: 180
+    }
+  },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false, 
+      validate: {
+        len: [2, 50]
+      }
     },
     description: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      }
     },
     price: {
       type: DataTypes.DECIMAL,
       allowNull: false,
       validate: {
-        isNumeric: true
+        isPositive(value) {
+          if (value < 0) {
+            throw new Error("Price per day must be a positive number")
+          }
+        }
       }
     },
   }, {

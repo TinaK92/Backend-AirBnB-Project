@@ -3,7 +3,7 @@ const router = require('express').Router();
 const sessionRouter = require('./session.js');
 const usersRouter = require('./users.js');
 const bookingRouter = require('./bookings.js');
-const spotRouter = require('./spot.js');
+const spotRouter = require('./spots.js');
 
 // backend/routes/api/index.js
 router.post('/test', function(req, res) {
