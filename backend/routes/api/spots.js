@@ -84,7 +84,7 @@ router.put('/:spotId', async (req, res) => {
         })
     };
     const editSpot = await Spot.findByPk(updateSpot);
-    
+
     if (address) editSpot.address = address;
     if (city) editSpot.city = city;
     if (state) editSpot.state = state;
@@ -102,5 +102,30 @@ router.put('/:spotId', async (req, res) => {
     return res.status(200).json(editSpot);
 })
 
+// Delete a Spot
+router.delete('/:spotID', async (req, res) => {
+    const { spotID } = req.params;
+    const user = req.user;
+
+    const deleteSpot = await Spot.findByPK(spotID);
+
+    if(!deleteSpot) {
+        return res.status(404).json({
+            message: "Couldn't find a Spot with the specified id"
+        });
+    }
+
+    if(deleteSpot.ownerId !== user.id) {
+        return res.status(404).json({
+            message: "Spot must belong to the current user"
+        })
+    }
+
+    await deleteSpot.destroy();
+
+    return res.status(200).json(deleteSpot, {
+        message: 'Successfully deleted'
+    });
+})
 
 module.exports = router;
