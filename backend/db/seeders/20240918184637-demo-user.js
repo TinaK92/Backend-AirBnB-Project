@@ -19,13 +19,13 @@ module.exports = {
      * }], {});
     */
     await User.bulkCreate([
-      ,{
+      {
         username: 'Demo-lition',
         firstName: 'Demo',
         lastName: 'lition',
         email: 'demo@user.io',
         hashedPassword: bcrypt.hashSync('password')
-      }
+      },
       {
         username: 'FakeUser1',
         firstName: 'Fake',

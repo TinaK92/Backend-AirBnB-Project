@@ -4,6 +4,7 @@ const sessionRouter = require('./session.js');
 const usersRouter = require('./users.js');
 const bookingRouter = require('./bookings.js');
 const spotRouter = require('./spots.js');
+const reviewRouter = require('./reviews.js');
 
 // backend/routes/api/index.js
 router.post('/test', function(req, res) {
@@ -65,5 +66,6 @@ router.post('/test', (req, res) => {
 });
 
 router.use('/spots', spotRouter);
+router.use('/reviews', reviewRouter);
 
 module.exports = router;
