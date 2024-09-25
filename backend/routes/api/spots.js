@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { Spot, User, Booking, SpotImage, Review, ReviewImage } = require('../../db/models');  // Assuming Spot is defined in your models
+const { Spot, User, Booking, SpotImage, Review, ReviewImage } = require('../../db/models');
 
 
 // Get all spots 
 router.get('/', async (req, res) => {
-    const getAllSpots = await Spot.findAll();  // Fetch all spots from the database
-    return res.status(200).json(getAllSpots);  // Correct the statusCode method
+    const getAllSpots = await Spot.findAll();
+    return res.status(200).json(getAllSpots);
 });
 
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const models = require('../../db/models');
+const { Spot, Review, User, ReviewImage } = require('../../db/models');
 
 router.get('/', async (req, res) => {
     const allReviews = await models.Review.findAll({
@@ -68,7 +68,32 @@ router.get('/current', async (req, res) => {
 
 // Get all reviews by a Spot's id
 router.get('/spots/:spotId/reviews', async (req, res) => {
-    
+    const { spotId } = req.params;
+
+    const spot = await Spot.findByPk(spotId);
+        if (!spot) {
+            return res.status(404).json({
+                message: "Couldn't find a Spot with the specified id"
+            });
+        }
+
+        const reviews = await models.Review.findAll({
+            where: {
+                spotId: spotId
+            },
+            include: [
+                {
+                    model: models.User,
+                    attributes: ['id', 'firstName', 'lastName']
+                },
+                {
+                    model: models.ReviewImage,
+                    attributes: ['id', 'url']
+                }
+            ]
+        });
+
+        return res.status(200).json(reviews);
 })
 
 
