@@ -53,6 +53,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notEmpty: true,
+        notIn: {
+          args: [['undefined', 'null']],
+          msg: "City cannot be set to undefined or null"
+        }
       }
     },
     state: {
@@ -60,6 +64,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notEmpty: true,
+        notIn: {
+          args: [['undefined', 'null']],
+          msg: "State cannot be set to undefined or null"
+        }
       }
     },
     country: {
@@ -67,6 +75,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false, 
       validate: {
         notEmpty: true,
+        notIn: {
+          args: [['undefined', 'null']],
+          msg: "Country cannot be set to undefined or null"
+        }
       }
     },
     lat: {
