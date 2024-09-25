@@ -82,19 +82,21 @@ router.put('/:spotId', async (req, res) => {
         return res.status(404).json({
             message: "Couldn't find a Spot with the specified id"
         })
-    }
+    };
     const editSpot = await Spot.findByPk(updateSpot);
-    editSpot.set({
-        address: address ?? undefined,
-        city: city,
-        state: state,
-        country: country,
-        lat: lat,
-        lng: lng,
-        name: name,
-        description: description,
-        price: price,
-    })
+    if (address) editSpot.address = address;
+    if (city) editSpot.city = city;
+    if (state) editSpot.state = state;
+    if (country) editSpot.country = country;
+    if (lat) editSpot.lat = lat;
+    if (lng) editSpot.lng = lng;
+    if (name) editSpot.name = name;
+    if (description) editSpot.description = description;
+    if (price) editSpot.price = price;
+
+
+    
+
     await editSpot.save();
     return res.status(200).json(editSpot);
 })

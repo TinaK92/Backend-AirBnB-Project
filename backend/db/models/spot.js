@@ -42,6 +42,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notEmpty: true,
+        notIn: {
+          args: [['undefined', 'null']],
+          message: "Address cannot be set to undefined or null"
+        }
       }
     },
     city: {
