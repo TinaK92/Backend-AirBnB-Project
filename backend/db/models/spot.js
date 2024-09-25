@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: true,
         notIn: {
           args: [['undefined', 'null']],
-          message: "Address cannot be set to undefined or null"
+          msg: "Address cannot be set to undefined or null"
         }
       }
     },

@@ -84,6 +84,7 @@ router.put('/:spotId', async (req, res) => {
         })
     };
     const editSpot = await Spot.findByPk(updateSpot);
+    
     if (address) editSpot.address = address;
     if (city) editSpot.city = city;
     if (state) editSpot.state = state;
