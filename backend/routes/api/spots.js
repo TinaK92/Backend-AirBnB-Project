@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Spot, User, Booking, SpotImage, Review, ReviewImage } = require('../../db/models');  // Assuming Spot is defined in your models
-const user = require('../../db/models/user');
+
 
 // Get all spots 
 router.get('/', async (req, res) => {
@@ -103,12 +103,12 @@ router.put('/:spotId', async (req, res) => {
 })
 
 // Delete a Spot
-router.delete('/:spotID', async (req, res) => {
-    const { spotID } = req.params;
+router.delete('/:spotId', async (req, res) => {
+    const { spotId } = req.params;
     const user = req.user;
 
-    const deleteSpot = await Spot.findByPK(spotID);
-
+    const deleteSpot = await Spot.findByPk(spotId);
+    console.log(deleteSpot)
     if(!deleteSpot) {
         return res.status(404).json({
             message: "Couldn't find a Spot with the specified id"
@@ -123,7 +123,8 @@ router.delete('/:spotID', async (req, res) => {
 
     await deleteSpot.destroy();
 
-    return res.status(200).json(deleteSpot, {
+    return res.status(200).json({
+        deleteSpot,
         message: 'Successfully deleted'
     });
 })
