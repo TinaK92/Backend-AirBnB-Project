@@ -1,24 +1,56 @@
 const express = require('express');
 const router = express.Router();
 const { Spot, User, Booking, SpotImage, Review, ReviewImage } = require('../../db/models');
+const spot = require('../../db/models/spot');
 
 
 // Get all spots 
 router.get('/', async (req, res) => {
     const getAllSpots = await Spot.findAll();
-    return res.status(200).json(getAllSpots);
+    return res.status(200).json({Spots:getAllSpots});
 });
 
 
 // Get all spots owned by the current user
 router.get('/current', async (req, res) => {
     const user = req.user;
-    const spotsByCurrentUser = await Spot.findAll({
-        where: {
-            ownerId: user.id
-        }
-    })
-    return res.status(200).json(spotsByCurrentUser)
+    if (user) {
+        const spotsByCurrentUser = await Spot.findAll({
+            where: {
+                ownerId: user.id
+            }
+        })
+        const arr = [];
+        for (let i = 0; i < spotsByCurrentUser.length; i++) {
+            let json = spotsByCurrentUser[i].toJSON();
+            const spotReview = await Review.findAll({
+                where: {
+                    spotId: json.id
+                }
+            })
+            let averageCount = 0;
+            for (let j = 0; j < spotReview.length; j++) {
+                let star = spotReview[j].stars;
+                averageCount += star;
+            }
+            let average = averageCount / spotReview.length;
+            json.avgRating = average;
+            
+            
+            
+            const spotPreviewImage = await SpotImage.findOne({
+                where: {
+                    spotId: json.id,
+                    preview: true
+                }
+            })
+            json.previewImage = spotPreviewImage.url;
+            arr.push(json);
+        };
+
+        return res.status(200).json({Spots:arr})
+    };
+
 });
 
 // Get details of a Spot from an id

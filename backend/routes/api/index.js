@@ -6,6 +6,7 @@ const bookingRouter = require('./bookings.js');
 const spotRouter = require('./spots.js');
 const reviewRouter = require('./reviews.js');
 
+
 // backend/routes/api/index.js
 router.post('/test', function(req, res) {
     res.json({ requestBody: req.body });
