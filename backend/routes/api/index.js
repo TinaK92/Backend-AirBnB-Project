@@ -67,5 +67,6 @@ router.post('/test', (req, res) => {
 
 router.use('/spots', spotRouter);
 router.use('/reviews', reviewRouter);
+router.use('/bookings', bookingRouter);
 
 module.exports = router;

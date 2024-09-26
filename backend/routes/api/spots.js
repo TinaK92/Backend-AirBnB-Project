@@ -108,7 +108,6 @@ router.delete('/:spotId', async (req, res) => {
     const user = req.user;
 
     const deleteSpot = await Spot.findByPk(spotId);
-    console.log(deleteSpot)
     if(!deleteSpot) {
         return res.status(404).json({
             message: "Couldn't find a Spot with the specified id"
@@ -196,6 +195,24 @@ router.post('/:spotId/reviews', async (req, res) => {
         stars,
     });
     return res.status(201).json(newReview)
+});
+
+// Get all Bookings for a Spot based on the Spot's id
+router.get('/:spotId/bookings', async (req, res) => {
+    const { spotId } = req.params;
+    const user = req.user;
+    const findSpotId = await Spot.findByPk(spotId);
+    if (!findSpotId) {
+        return res.status(404).json({
+            message: "Spot couldn't be found"
+        })
+    };
+    if(findSpotId.ownerId !== user.id) {
+        const findBooking = await Booking.findAll({
+            where
+        })
+    };
 })
+
 
 module.exports = router;
