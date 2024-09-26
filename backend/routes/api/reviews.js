@@ -66,34 +66,11 @@ router.get('/current', async (req, res) => {
     return res.json({ message: "No user is currently logged in"})
 });
 
-// Get all reviews by a Spot's id
-router.get('/spots/:spotId/reviews', async (req, res) => {
-    const { spotId } = req.params;
-
-    const spot = await Spot.findByPk(spotId);
-        if (!spot) {
-            return res.status(404).json({
-                message: "Couldn't find a Spot with the specified id"
-            });
-        }
-
-        const reviews = await models.Review.findAll({
-            where: {
-                spotId: spotId
-            },
-            include: [
-                {
-                    model: models.User,
-                    attributes: ['id', 'firstName', 'lastName']
-                },
-                {
-                    model: models.ReviewImage,
-                    attributes: ['id', 'url']
-                }
-            ]
-        });
-
-        return res.status(200).json(reviews);
+// Create a review for a Spot based on the Spot's id
+router.post('/:spotId/reviews', async (req, res) => {
+    const { review, stars } = req.body;
+    const spotId = req.params.spotId;
+    const useriD = req.uawe.id;
 })
 
 

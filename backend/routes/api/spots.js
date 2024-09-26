@@ -127,6 +127,75 @@ router.delete('/:spotId', async (req, res) => {
         deleteSpot,
         message: 'Successfully deleted'
     });
+});
+
+// Get all reviews by a Spot's id
+router.get('/:spotId/reviews', async (req, res) => {
+    const spotId = req.params.spotId;
+    const findSpot = await Spot.findByPk(spotId);
+    if (!findSpot) {
+        return res.status(404).json({
+            message: "Spot couldn't be found"
+        })
+    };
+    const reviews = await Review.findAll({
+        where: {
+            spotId: spotId
+        },
+        include: [
+            {
+                model: User,
+                attributes: ['id', 'firstName', 'lastName']
+            },
+            {
+                model: ReviewImage,
+                attributes: ['id', 'url']
+            }
+        ]
+    });
+    return res.status(200).json({Reviews: reviews});
+});
+
+// Create a review for a Spot based on the Spot's id
+router.post('/:spotId/reviews', async (req, res) => {
+    const spotId = req.params.spotId;
+    const userId = req.user.id;
+    const { review, stars } = req.body;
+    const findSpot = await Spot.findByPk(spotId);
+    if (!findSpot) {
+        return res.status(404).json({
+            message: "Spot couldn't be found"
+        })
+    };
+    if (!review) {
+        return res.status(400).json({
+            message: "Review text is required"
+        })
+    };
+    if (!stars) {
+        return res.status(400).json({
+            message: "Stars must be an integer from 1 to 5"
+        })
+    };
+    const allReviews = await Review.findAll({
+        where: {
+            userId: req.user.id,
+            spotId: req.params.spotId
+        }
+    })
+    if (allReviews) {
+        return res.status(500).json({
+            message: "User already has a review for this spot"
+        }); 
+    }
+
+    const newReview = await Review.create({
+        spotId,
+        userId,
+        review,
+        stars,
+    });
+    return res.status(201).json(newReview)
 })
 
 module.exports = router;
