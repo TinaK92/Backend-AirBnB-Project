@@ -15,7 +15,6 @@ module.exports = {
                     autoIncrement: true,
                     primaryKey: true,
                     type: Sequelize.INTEGER,
-                    unique: true,
                 },
                 firstName: {
                     type: Sequelize.STRING,

@@ -12,11 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       Booking.belongsTo(models.User, {
         foreignKey: 'userId',
         otherKey: 'id',
-        onDelete: 'CASCADE',
       });
       Booking.belongsTo(models.Spot, {
         foreignKey: 'spotId', 
-        onDelete: 'CASCADE',
       })
     }
   }

@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
       // Review Image belongs to reviewId
       ReviewImage.belongsTo(models.Review, {
         foreignKey: 'reviewId',
-        onDelete: 'CASCADE',
       })
     }
   }
