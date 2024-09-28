@@ -95,9 +95,9 @@ module.exports = {
      * }], {});
     */
 
-    for (let i = 0; i < spots.length; i++) {
-      await Spot.create(spots[i]);
-    }
+    console.log("Seeding Spots...");
+    await Spot.bulkCreate(spots, { validate: true });
+    console.log("Finished Seeding Spots");
 
   },
 
@@ -108,12 +108,14 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    for (let i = 0; i < spots.length; i++) {
-      Spot.destroy({
-        where: 
-          spots[i]
-      });
-    }
+    options.tableName = "Spots";
+    const Op = Sequelize.Op;
+    const addresses = spots.map((spot) => spot.address);
+    await queryInterface.bulkDelete(options, {
+      name: {
+        [Op.in]: addresses,
+      },
+    });
   }
 };
 
