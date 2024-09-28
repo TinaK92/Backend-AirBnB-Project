@@ -28,6 +28,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Spot.init({
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     ownerId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -40,53 +46,25 @@ module.exports = (sequelize, DataTypes) => {
     address: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-        notIn: {
-          args: [['undefined', 'null']],
-          msg: "Address cannot be set to undefined or null"
-        }
-      }
     },
     city: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-        notIn: {
-          args: [['undefined', 'null']],
-          msg: "City cannot be set to undefined or null"
-        }
-      }
     },
     state: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-        notIn: {
-          args: [['undefined', 'null']],
-          msg: "State cannot be set to undefined or null"
-        }
-      }
     },
     country: {
       type: DataTypes.STRING,
       allowNull: false, 
-      validate: {
-        notEmpty: true,
-        notIn: {
-          args: [['undefined', 'null']],
-          msg: "Country cannot be set to undefined or null"
-        }
-      }
     },
     lat: {
       type: DataTypes.DECIMAL,
       allowNull: false, 
       validate: {
-        min: -80,
-        max: 80
+        min: -90,
+        max: 90
       }
     },
     lng: {
@@ -100,26 +78,16 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false, 
-      validate: {
-        len: [2, 50]
-      }
     },
     description: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      }
     },
     price: {
       type: DataTypes.DECIMAL,
       allowNull: false,
       validate: {
-        isPositive(value) {
-          if (value < 0) {
-            throw new Error("Price per day must be a positive number")
-          }
-        }
+        min: 0,
       }
     },
   }, {

@@ -5,6 +5,8 @@ const usersRouter = require('./users.js');
 const bookingRouter = require('./bookings.js');
 const spotRouter = require('./spots.js');
 const reviewRouter = require('./reviews.js');
+const reviewImagesRouter = require('./review-images.js');
+const spotImagesRouter = require('./spot-images.js');
 
 
 // backend/routes/api/index.js
@@ -58,16 +60,18 @@ router.get(
 
 
 router.use('/session', sessionRouter);
-
 router.use('/users', usersRouter);
+router.use('/spots', spotRouter);
+router.use('/reviews', reviewRouter);
+router.use('/bookings', bookingRouter);
+router.use('/spotImages', spotImagesRouter);
+router.use('/reviewImages', reviewImagesRouter);
+
 
 router.post('/test', (req, res) => {
     
   res.json({ requestBody: req.body });
 });
 
-router.use('/spots', spotRouter);
-router.use('/reviews', reviewRouter);
-router.use('/bookings', bookingRouter);
 
 module.exports = router;

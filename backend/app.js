@@ -6,7 +6,13 @@ const cors = require('cors');
 const csurf = require('csurf');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-const sessionRouter = require('../backend/routes/api/session.js')
+const sessionRouter = require('../backend/routes/api/session.js');
+const bookingRouter = require('../backend/routes/api/bookings.js');
+const reviewRouter = require('../backend/routes/api/reviews.js');
+const spotRouter = require('../backend/routes/api/spots.js');
+const userRouter = require('../backend/routes/api/users.js');
+const reviewImagesRouter = require('../backend/routes/api/review-images.js');
+const spotImagesRouter = require('../backend/routes/api/spot-images.js');
 
 
 // Create a variable called isProduction that will be true if 
@@ -76,7 +82,13 @@ const routes = require('./routes');
 
 
 app.use(routes); // Connect all the routes
-app.use('/session', sessionRouter);
+// app.use('/session', sessionRouter);
+// app.use('/bookings', bookingRouter);
+// app.use('/reviews', reviewRouter);
+// app.use('/spots', spotRouter);
+// app.use('/users', userRouter);
+// app.use('/reviewImages', reviewImagesRouter);
+// app.use('/spotImages', spotImagesRouter);
 
 // backend/app.js
 // Catch unhandled requests and forward to error handler.
