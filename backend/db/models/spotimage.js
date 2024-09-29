@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       references: {
         model: 'Spots',
-        key: 'id',
       },
       onDelete: 'CASCADE',
     },
@@ -36,11 +35,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: "SpotImage",
-      defaultScope: {
-        attributes: {
-          exclude: ["spotId", "createdAt", "updatedAt"],
-        },
-      },
   });
   return SpotImage;
 };
