@@ -151,66 +151,30 @@ router.get('/:spotId/bookings', async (req, res) => {
 })
 
 // Get all reviews by a Spot's id
-router.get('/:spotId/reviews', async (req, res, next) => {
+router.get('/:spotId/reviews',requireAuth, async (req, res) => {
     const spotId = req.params.spotId;
-    try {
-        const spot = await Spot.findOne({
-            where: { id: spotId },
-            include: [
-              {
-                model: Review,
-                attributes: [
-                  "id",
-                  "userId",
-                  "spotId",
-                  "review",
-                  "stars",
-                  "createdAt",
-                  "updatedAt",
-                ],
-                include: [
-                  {
-                    model: User,
-                    attributes: userAttributes,
-                  },
-                  {
-                    model: ReviewImage,
-                    attributes: imageAttributes,
-                  },
-                ],
-              },
-            ],
-          });
-          if (!spot) {
-              return res.status(404).json({
-                  message: "Spot couldn't be found"
-              });
-          };
-          const reviews = spot.Reviews.map((review) => {
-            return {
-              id: review.id,
-              userId: review.userId,
-              spotId: review.spotId,
-              review: review.review,
-              stars: review.stars,
-              createdAt: review.createdAt,
-              updatedAt: review.updatedAt,
-              User: {
-                id: review.User.id,
-                firstName: review.User.firstName,
-                lastName: review.User.lastName,
-              },
-              ReviewImages: review.ReviewImages.map((image) => ({
-                id: image.id,
-                url: image.url,
-              })),
-            };
-          });
-      
-          res.json({ Reviews: reviews });
-        } catch (error) {
-          next(error);
-    }
+    const findSpot = await Spot.findByPk(spotId);
+    if (!findSpot) {
+        return res.status(404).json({
+            message: "Spot couldn't be found"
+        })
+    };
+    const reviews = await Review.findAll({
+        where: {
+            spotId: spotId
+        },
+        include: [
+            {
+                model: User,
+                attributes: ['id', 'firstName', 'lastName']
+            },
+            {
+                model: ReviewImage,
+                attributes: ['id', 'url']
+            }
+        ]
+    });
+    return res.status(200).json({Reviews: reviews});
 });
 
 // Get details of a Spot from an id
