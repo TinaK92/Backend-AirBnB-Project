@@ -288,7 +288,7 @@ router.get('/:spotId', async (req, res) => {
   });
 
 // Get all spots owned by the current user
-router.get('/current', requireAuth, async (req, res) => {
+router.get('/current', requireAuth, async (req, res, next) => {
     const userId = req.user.id;
     try {
         const allSpots = await Spot.findAll({
@@ -350,17 +350,16 @@ router.get('/current', requireAuth, async (req, res) => {
                 name: spot.name,
                 description: spot.description,
                 price: spot.price,
-                createdAt: spot.createdAt,
-                updatedAt: spot.updatedAt,
                 avgRating: spot.avgRating,
                 previewImage: spot.previewImage,
+                createdAt: spot.createdAt,
+                updatedAt: spot.updatedAt,
             };
         });
-        res.json({ Spots: formatSpots });
+        return res.status(200).json({ Spots: formatSpots });
     } catch (error) {
         next(error);
     }
-
 });
 
 // Get all spots 
@@ -572,8 +571,7 @@ router.post('/', requireAuth, validateSpot, async (req, res) => {
 // Edit a Spot
 router.put('/:spotId', requireAuth, validateSpot, async (req, res, next) => {
     const spotId = req.params.spotId;
-  const { address, city, state, country, lat, lng, name, description, price, createdAt, updatedAt } =
-    req.body;
+  const { address, city, state, country, lat, lng, name, description, price, createdAt, updatedAt } = req.body;
   const ownerId = req.user.id;
 
   try {
@@ -632,7 +630,7 @@ router.delete('/:spotId', requireAuth, async (req, res, next) => {
         const spot = await Spot.findByPk(spotId);
         if(!spot) {
             return res.status(404).json({
-                message: "Couldn't find a Spot with the specified id"
+                message: "Spot couldn't be found"
             });
         }
         if(spot.ownerId !== ownerId) {
