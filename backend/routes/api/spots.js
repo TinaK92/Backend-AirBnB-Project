@@ -465,46 +465,59 @@ router.get('/', validateQueryParams, async (req, res) => {
     });
 
 // Create a review for a Spot based on the Spot's id
-router.post('/:spotId/reviews', async (req, res) => {
+router.post('/:spotId/reviews',requireAuth, async (req, res) => {
     const spotId = req.params.spotId;
     const userId = req.user.id;
     const { review, stars } = req.body;
+  
     const findSpot = await Spot.findByPk(spotId);
     if (!findSpot) {
-        return res.status(404).json({
-            message: "Spot couldn't be found"
-        })
-    };
-    if (!review) {
-        return res.status(400).json({
-            message: "Review text is required"
-        })
-    };
-    if (!stars) {
-        return res.status(400).json({
-            message: "Stars must be an integer from 1 to 5"
-        })
-    };
-    const allReviews = await Review.findAll({
-        where: {
-            userId: req.user.id,
-            spotId: req.params.spotId
-        }
-    })
-    if (allReviews) {
-        return res.status(500).json({
-            message: "User already has a review for this spot"
-        }); 
+      return res.status(404).json({
+        message: "Spot couldn't be found"
+      });
     }
-
-    const newReview = await Review.create({
-        spotId,
+  
+    const existingReview = await Review.findOne({
+      where: {
         userId,
-        review,
-        stars,
+        spotId
+      }
     });
-    return res.status(201).json(newReview)
-});
+    if (existingReview) {
+      return res.status(500).json({
+        message: "User already has a review for this spot"
+      });
+    }
+  
+    if (typeof review !== 'string' || review.trim() === '') {
+  return res.status(400).json({
+    message: "Review text is required"
+  });
+}
+  
+    if (typeof stars !== 'number' || stars < 1 || stars > 5) {
+      return res.status(400).json({
+        message: "Stars must be an integer from 1 to 5"
+      });
+    }
+  
+    const newReview = await Review.create({
+      spotId,
+      userId,
+      review,
+      stars
+    });
+  
+    return res.status(201).json({
+      id: newReview.id,
+      userId: newReview.userId,
+      spotId: newReview.spotId,
+      review: newReview.review,
+      stars: newReview.stars,
+      createdAt: newReview.createdAt,
+      updatedAt: newReview.updatedAt
+    });
+  });
 
 
 // Add an image to a Spot based on the Spot's id
