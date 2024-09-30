@@ -485,7 +485,7 @@ router.get('/', validateQueryParams, async (req, res) => {
             spot.previewImage = "No preview image available";
           }
           delete spot.SpotImages; // Remove SpotImages after processing previewImage
-    
+          console.log(typeof spot.lat);
           return spot;
         });
     
