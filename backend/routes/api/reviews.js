@@ -6,31 +6,11 @@ const { literal } = require('sequelize');
 const { requireAuth } = require('../../utils/auth.js');
 
 const authorization = async (req,res, next) => {
-    const rId = req.params['reviewId']
     if (!req.user) {
         return res.status(403).json({
             message: "Authorization required"
         });
-    }
-    const findReview = await Review.findOne({
-        where: {
-            id: rId
-        }
-    })
-
-    if (!findReview) {
-        return res.status(404).json({
-            message: "Review not found"
-        })
-    }
-    // console.log(rId)
-    const authorId = findReview.dataValues.userId
-    const currentUserId = req.user.id
-    if (authorId != currentUserId) {
-        return res.status(403).json({
-            message: "Review must belong to the current user"
-        });
-    }   
+    }  
     next()
 };
 
@@ -135,38 +115,7 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
         url: newImage.url,
     });
 });
-// router.post('/:reviewId/images',requireAuth,authorization, async (req, res) => {
-//     const userId = req.user.id;
-//     const reviewId = req.params.reviewId;
-//     const { url } = req.body;
-//     const findReview = await Review.findByPk(reviewId);
-//     if (!findReview) {
-//         return res.status(404).json({
-//             message: "Review couldn't be found"
-//         })
-//     };
-//     if (review.userId !== userId) {
-//         return res.status(403).json({
-//             message: "Unauthorized",
-//         })
-//     }
-//     const countImages = await ReviewImage.count({
-//         where: {
-//             reviewId
-//         }
-//     });
-//     if (countImages >= 10) {
-//         return res.status(403).json({
-//             message: "Maximum number of images for this resource was reached"
-//         })
-//     };
 
-//     const addImg = await ReviewImage.create({
-//         reviewId,
-//         url
-//     });
-//     return res.status(201).json({ id: addImg.id, url: addImg.url });
-// });
 
 
 // Edit a Review
@@ -212,41 +161,16 @@ router.put('/:reviewId', requireAuth, async (req, res) => {
         updatedAt: existingReview.updatedAt,
     });
 });
-//router.put('/:reviewId',requireAuth,authorization, async (req, res) => {
-//     // console.log('1111111111111111')
-//     const { review, stars } = req.body;
-//     const reviewId = Number(req.params.reviewId);
-//     const findReview = await Review.findByPk(reviewId);
-//     if (!findReview) {
-//         return res.status(404).json({
-//             message: "Review couldn't be found"
-//         })
-//     };
-//     if (!review) {
-//         return res.status(400).json({
-//             message: "Review text is required"
-//         })
-//     };
-//     if (!stars) {
-//         return res.status(400).json({
-//             message: "Stars must be an integer from 1 to 5"
-//         })
-//     };
-//     if (review) findReview.review = review;
-//     if (stars) findReview.stars = stars;
 
-//     await findReview.save();
-//     return res.status(200).json(findReview);
-// });
 
 // Delete a review
-router.delete('/:reviewId',requireAuth,authorization, async (req, res) => {
-    const reviewId = req.params.reviewId;
-    if (reviewId === 'null') {
-        return res.status(404).json({
-            message: "Review not found"
+router.delete('/:reviewId',requireAuth, async (req, res) => {
+    if (!req.user) {
+        return res.status(403).json({
+            message: "Authorization required"
         })
     }
+    const reviewId = req.params.reviewId;
     const deleteReview = await Review.findByPk(reviewId);
     if (!deleteReview) {
         return res.status(404).json({

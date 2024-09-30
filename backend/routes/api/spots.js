@@ -393,7 +393,9 @@ router.get('/:spotId', async (req, res) => {
 
 // Get all spots 
 router.get('/', validateQueryParams, async (req, res) => {
-    let { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+    let { minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+    const page = req.query.page ?? 1;
+    const size = req.query.size ?? 20;
     const limit = size ?? 20;
     const offset = page ? (page - 1) * size : 0;
     const where= {};
@@ -403,7 +405,7 @@ router.get('/', validateQueryParams, async (req, res) => {
         };
     } else if (minLat !== undefined) {
         where.lat = {
-            [Op.gte]: minLatm
+            [Op.gte]: minLat
         };
     } else if (maxLat !== undefined) {
         where.lat = {
