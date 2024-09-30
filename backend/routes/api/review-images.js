@@ -1,33 +1,53 @@
 const express = require('express');
 const router = express.Router();
-const { Review, ReviewImage } = require('../../db/models');
+const { Spot, Booking, SpotImage, Review, ReviewImage } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
+const { Op, fn, col } = require('sequelize');
 
-router.delete('/:imageId', requireAuth, async (req, res) => {
+
+router.delete('/:imageId', requireAuth, async (req, res, next) => {
+    const { imageId } = req.params;
+    const userId = req.user.Id;
     try {
+        // Fine the review image by imageId
+        const reviewImage = await ReviewImage.findByPk(imageId, {
+            include: {
+                model: Review,
 
-        const { imageId } = req.params;
-
-        const reviewImage = await ReviewImage.findByPk(imageId);
-
+            },
+        });
+        // If the review image doesnt exist, return 404 error
         if (!reviewImage) {
             return res.status(404).json({
                 message: "Review Image couldn't be found"
             });
         }
+        if (reviewImage.Review.userId !== userId) {
+            return res
+              .status(403)
+              .json({
+                message: "Forbidden: Review Image does not belong to current user",
+              });
+          }
 
-        const review = await Review.findOne({
-            where: {
-                id: reviewImage.reviewId,
-                userId: req.user.id
-            }
-        });
+        // const review = await Review.findByPk({
+        //     where: {
+        //         id: reviewImage.reviewId,
+        //         userId: userId,
+        //     }
+        // });
 
-        if (!review) {
-            return res.status(403).json({
-                message: "Forbidden: You are not authorized to delete this image"
-            });
-        }
+        // if (review.userId !== userId) {
+        //     return res.status(403).json({
+        //         message: "Forbidden",
+        //     })
+        // }
+
+        // if (!review) {
+        //     return res.status(403).json({
+        //         message: "Forbidden: You are not authorized to delete this image"
+        //     });
+        // }
 
         await reviewImage.destroy();
 
@@ -35,8 +55,7 @@ router.delete('/:imageId', requireAuth, async (req, res) => {
             message: "Successfully deleted"
         });
     } catch (error) {
-        console.error('Error deleting review image:', error);
-        return res.status(500).json({ message: "Internal server error" });
+        next(error);
     }
 });
 
