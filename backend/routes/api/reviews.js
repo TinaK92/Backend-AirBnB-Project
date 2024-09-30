@@ -17,6 +17,7 @@ const authorization = async (req,res, next) => {
 // Get all reviews of the current user (get all reviews made by current user)
 router.get('/current',requireAuth, async (req, res) => {
     if (req.user) {
+        const schema = process.env.NODE_ENV === 'production' ? `"${process.env.SCHEMA}".` : '';
         const currentReviews = await Review.findAll({
             where: {
                 userId: req.user.id
@@ -33,12 +34,12 @@ router.get('/current',requireAuth, async (req, res) => {
                         include: [
                             [
                                 literal(`(
-                                    SELECT url
-                                    FROM SpotImages AS SpotImage
+                                    SELECT "url"
+                                    FROM ${schema}"SpotImages" AS "SpotImage"
                                     WHERE
-                                        SpotImage.preview = true
+                                        "SpotImage"."preview" = true
                                         AND
-                                        SpotImage.spotId = Spot.id
+                                        "SpotImage"."spotId" = "Spot"."id"
                                 )`),
                                 'previewImage',
                             ],
